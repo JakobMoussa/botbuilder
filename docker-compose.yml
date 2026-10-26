@@ -1,0 +1,59 @@
+name: dialogue
+x-app: &app
+  image: dialogue:local
+  build: .
+  environment: &environment
+    DATABASE_URL: postgresql://dialogue:${POSTGRES_PASSWORD:-dialogue-local-only}@db:5432/dialogue
+    APP_URL: ${APP_URL:-http://localhost:3000}
+    AUTH_SECRET: ${AUTH_SECRET:-}
+    ENCRYPTION_KEY: ${ENCRYPTION_KEY:-}
+    OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+    ALLOW_REGISTRATION: ${ALLOW_REGISTRATION:-false}
+    FIREBASE_AUTH_ENABLED: ${FIREBASE_AUTH_ENABLED:-false}
+    FIREBASE_WEB_API_KEY: ${FIREBASE_WEB_API_KEY:-}
+    TRUST_PROXY: ${TRUST_PROXY:-false}
+    FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID:-dialogue-c8291}
+    GOOGLE_APPLICATION_CREDENTIALS: /app/dialogue-c8291-firebase-adminsdk-fbsvc-b4b9e086a5.json
+  volumes:
+    - secrets:/app/runtime
+    - ./dialogue-c8291-firebase-adminsdk-fbsvc-b4b9e086a5.json:/app/dialogue-c8291-firebase-adminsdk-fbsvc-b4b9e086a5.json:ro
+  restart: unless-stopped
+services:
+  db:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_USER: dialogue
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dialogue-local-only}
+      POSTGRES_DB: dialogue
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U dialogue -d dialogue"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: unless-stopped
+  init:
+    <<: *app
+    command: [node, scripts/boot.mjs, init]
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+  web:
+    <<: *app
+    command: [node, scripts/boot.mjs, web]
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    depends_on:
+      init:
+        condition: service_completed_successfully
+  worker:
+    <<: *app
+    command: [node, scripts/boot.mjs, worker]
+    depends_on:
+      init:
+        condition: service_completed_successfully
+volumes:
+  postgres:
+  secrets:

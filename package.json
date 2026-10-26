@@ -1,0 +1,54 @@
+{
+  "name": "dialogue-chatbot-builder",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "package:upload": "node scripts/package-upload.mjs",
+    "dev": "next dev",
+    "build": "prisma generate && next build --webpack",
+    "start": "next start",
+    "worker": "tsx src/worker.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:integration": "node --env-file=.env node_modules/vitest/vitest.mjs run --config vitest.integration.config.ts",
+    "db:migrate": "prisma migrate deploy",
+    "db:generate": "prisma generate",
+    "check": "npm run typecheck && npm run lint && npm test && prisma validate",
+    "test:browser": "node --env-file=.env node_modules/@playwright/test/cli.js test"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.19.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@tailwindcss/postcss": "^4.1.0",
+    "cheerio": "^1.1.2",
+    "clsx": "^2.1.1",
+    "dotenv": "^18.0.5",
+    "firebase-admin": "^14.5.0",
+    "ipaddr.js": "^2.2.0",
+    "lucide-react": "^0.468.0",
+    "mammoth": "^1.11.0",
+    "next": "^16.0.0",
+    "pdf-parse": "^2.4.5",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "tailwind-merge": "^3.3.0",
+    "tailwindcss": "^4.1.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.56.0",
+    "@types/node": "^22.0.0",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^16.0.0",
+    "prisma": "^6.19.0",
+    "tsx": "^4.20.0",
+    "typescript": "^5.9.0",
+    "vitest": "^4.1.11"
+  },
+  "overrides": {
+    "deepmerge-ts": "^8.0.0"
+  }
+}

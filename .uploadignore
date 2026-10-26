@@ -1,0 +1,40 @@
+# Exclude patterns for a manual transfer (e.g. rsync --exclude-from=.uploadignore).
+# FTP clients do not automatically read this file. Prefer npm run package:upload.
+# The generated package contains a separate production Compose and env template.
+node_modules/
+.next/
+.git/
+.agents/
+.codex/
+.idea/
+.vscode/
+.DS_Store
+.env
+.env.*
+*.env
+*firebase-adminsdk*.json
+service-account*.json
+credentials*.json
+secrets*.json
+*.pem
+*.key
+*.p12
+*.pfx
+*.log
+*.tsbuildinfo
+test-results/
+playwright-report/
+coverage/
+tests/
+vitest*.ts
+playwright.config.ts
+eslint.config.mjs
+components.json
+.data/
+runtime/
+backups/
+*.sql.gz
+*.dump
+upload/
+docker-compose.dev.yml
+public/demo.html

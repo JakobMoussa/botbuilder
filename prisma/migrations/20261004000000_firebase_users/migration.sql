@@ -1,0 +1,4 @@
+ALTER TABLE "User" ALTER COLUMN "passwordHash" DROP NOT NULL;
+ALTER TABLE "User" ADD COLUMN "firebaseUid" TEXT;
+CREATE UNIQUE INDEX "User_firebaseUid_key" ON "User"("firebaseUid");
+ALTER TABLE "Session" ADD COLUMN "authenticatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
